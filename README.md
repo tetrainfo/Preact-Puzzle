@@ -1,2 +1,4 @@
 # Preact-Puzzle
-Another Covid
+Another Preact excercise.  
+
+This time, Sprites.
