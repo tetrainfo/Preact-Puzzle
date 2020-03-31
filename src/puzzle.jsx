@@ -25,7 +25,7 @@ export default class Puzzle extends Component {
             for (var j=0; j<=15; j++) {
                 let item = {id: "id"+counter};
                 counter++
-                item.class = "card picture"; 
+                //item.class = "card picture"; 
                 item.position ="background-position: " + (-j*49 + x0) + "px " + (-i*99 + y0) + "px";  
                 items.push(item);  
             }
@@ -53,29 +53,10 @@ export default class Puzzle extends Component {
         return items;
     }
 
-    //filter experiment
-    getId = (items, id ) => {
-        return items.filter( (item) => item.id == id );
-    }
-
-    getElemId = (e) => {
-        //utility method to extract address id
-        let id = -1;
-        if (e.target.id) {
-            id = parseInt(e.target.id,10);
-        } else {
-            id = parseInt(e.target.parentElement.id,10);
-        }
-        return id;
-    }
-
 
     promote = id => {
         let { items, itemStack, stats } = this.state;
-        //const id = this.getElemId(e);
         console.log("id: " + id)
-        //previously we had an array of elements, and the id corresponded exactly with its order in the array
-        //rank of each card item.rank would change with each click
 
         //ignore this promotion if its rank is 0. Invalid
         if ( id < 1 ){
@@ -87,8 +68,8 @@ export default class Puzzle extends Component {
         //swap with item in front
         var promoted = items[id];
         var demoted = items[id-1];
-        promoted.id = demoted.id;
-        demoted.id = promoted.id;
+        //promoted.id = demoted.id;
+        //demoted.id = promoted.id;
         items[id] = demoted;
         items[id-1] = promoted;
 
@@ -104,10 +85,10 @@ export default class Puzzle extends Component {
         })
         itemStack = [];
         items = this.shuffle(items);
-        for (var i = 0; i < items.length; i++ ) {
-            items[i].id = i;
-        }
-        //todo: shuffle the rank?
+        //for (var i = 0; i < items.length; i++ ) {
+        //    items[i].id = i;
+        //}
+
         this.setState({items, itemStack});
     }
     
@@ -121,14 +102,14 @@ export default class Puzzle extends Component {
                     <div class="container">
                         { items.map( (item, idx) => ( 
                             <div class="inlineBlock promote continuity">
-                                <div style={item.position} class={item.class} id={idx} onClick={ () => this.promote(idx) } > 
+                                <div style={item.position} class="card frame picture" id={item.id} onClick={ () => this.promote(idx) } > 
                                 </div>
                             </div>
                         )) } 
                     </div> 
                 </div>
-                <div class="boxCover scaled"></div>
-                <div>todo: make border transparent when piece matches</div>
+                <div class="boxCover picture scaled"></div>
+                <div>Todo: make puzzle piece border transparent when piece matches</div>
             </div>
         )
     }

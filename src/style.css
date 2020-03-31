@@ -40,16 +40,18 @@ h3{
 
 
 .picture{
+	background: url(../assets/images/puzzle.jpg)  top left no-repeat;
+}
+
+.frame {
 	border:1px solid black;
 	width: 49px;
 	height: 99px;
-	background: url(../assets/images/puzzle.jpg)  top left no-repeat;
 }
 
 .boxCover {
 	width: 820px;
 	height: 500px;
-	background: url(../assets/images/puzzle.jpg)  top left no-repeat;
 }
 
 .scaled {
