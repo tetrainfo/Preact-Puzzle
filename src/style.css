@@ -1,0 +1,58 @@
+html, body {
+	font: 14px/1.21 'Helvetica Neue', arial, sans-serif;
+	font-weight: 400;
+	margin:0px;
+}
+
+h3{
+	text-align: center;
+	margin: 0px;
+	padding-left:5px;
+}
+
+.container {
+	width: 820px;
+	background: burlywood;
+	padding:3px;
+}
+
+.inlineBlock {
+	display: inline-block;
+}
+
+.cardTable {
+	border:1px solid black;
+	margin-top:5px;
+	width: 827px;
+}
+
+.promote {
+	cursor: pointer;
+}
+
+.continuity {
+	margin-bottom:-4px;
+}
+
+.hidden {
+	display: none;
+}
+
+
+.picture{
+	border:1px solid black;
+	width: 49px;
+	height: 99px;
+	background: url(../assets/images/puzzle.jpg)  top left no-repeat;
+}
+
+.boxCover {
+	width: 820px;
+	height: 500px;
+	background: url(../assets/images/puzzle.jpg)  top left no-repeat;
+}
+
+.scaled {
+	transform: scale(0.7);
+}
+
