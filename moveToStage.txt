@@ -1,0 +1,23 @@
+#1 /usr/bin/bash
+# this script updates the tetra staging environment for puzzle-app
+cd C:/tetrawebsite/html/puzzle
+echo "empty website folder"
+rm *.*
+echo "run build in src folder"
+cd C:/Users/tetra/Preact/puzzle/src
+echo "running build"
+npm run build
+echo "done building, fix index file slash references"
+### find and replace script for forward slash fix##
+cd C:/Users/tetra/Preact/puzzle/build
+sed -i -e 's/\/bundle/bundle/g' index.html
+sed -i -e 's/\/polyfills/polyfills/g' index.html
+sed -i -e 's/\/manifest/manifest/g' index.html
+sed -i -e 's/\/favicon/favicon/g' index.html
+sed -i -e 's/url(\//url(/g' index.html
+sed -i -e 's/url(\//url(/g'  bundle*.css
+#copy to staging enviroment
+echo "copy build folder to website html/puzzle folder"
+cp *.*  C:/tetrawebsite/html/puzzle
+## todo some sort of scripted filezilla command?
+

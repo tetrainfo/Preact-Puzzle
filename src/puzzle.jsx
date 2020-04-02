@@ -7,34 +7,24 @@ export default class Puzzle extends Component {
         stats: {count: 0, points: 0 }
        }
 
-    componentDidUpdate( ) {
-       // console.log("ComponentDidUpdate triggers hide at 3 secconds")
-       //setTimeout( this.hideLast2, 3000);
-    }
-
     componentDidMount( ) {
-        //data structure critical thinking question:
-        //is this better solved as an array or as a linked list?
-        //build the card collection
+        //build the collection of pieces
         const x0=-0;
         const y0=-20;
         let { items, itemStack } = this.state;
         let counter = 0;
-        //let items = [];
+
         for (var i=0; i<= 4; i++){
             for (var j=0; j<=15; j++) {
-                let item = {id: "id"+counter};
+                let item = {id: counter};
                 counter++
-                //item.class = "card picture"; 
+                item.class = ""; 
                 item.position ="background-position: " + (-j*49 + x0) + "px " + (-i*99 + y0) + "px";  
                 items.push(item);  
             }
         }
         //shuffle the array and reassign the ids for access purposes to match the new array order
         //items = this.shuffle(items);
-        for ( i = 0; i < items.length; i++ ) {
-            items[i].id = i;
-        }
         this.setState({items, itemStack});
     }
 
@@ -53,10 +43,19 @@ export default class Puzzle extends Component {
         return items;
     }
 
+    areAdjacent = ( id1, id2 ) => {
+        let a = parseInt( id2, 10 );
+        let b = parseInt( id1, 10 );
+        //if the id match
+        if( (a - b) == 1 ) {
+            return true
+        }
+        return false
+    }
+
 
     promote = id => {
         let { items, itemStack, stats } = this.state;
-        console.log("id: " + id)
 
         //ignore this promotion if its rank is 0. Invalid
         if ( id < 1 ){
@@ -66,13 +65,33 @@ export default class Puzzle extends Component {
         stats.count++;
 
         //swap with item in front
-        var promoted = items[id];
-        var demoted = items[id-1];
-        //promoted.id = demoted.id;
-        //demoted.id = promoted.id;
-        items[id] = demoted;
-        items[id-1] = promoted;
+        let promoted = items[ id ] ;
+        let demoted = items[ id-1 ];
+        let upstream = items[ id-2 ];
+        if (!upstream) {
+            upstream = {id: "-1"}
+        }
+        let upstreamId = upstream.id;
 
+        items[ id ] = demoted;
+        items[ id-1 ] = promoted;
+
+
+        //determine if the demoted is adjacent and change class
+        let demotedId = demoted.id;
+        let promotedId = promoted.id;
+        if ( this.areAdjacent( promotedId, demotedId ) ) {
+            items[ id ].class = "adjacent";
+        } 
+        else {
+            items[ id ].class = "";
+        }
+        if ( this.areAdjacent( upstreamId, promotedId ) ) {
+            items[ id - 1 ].class = "adjacent";
+        }
+        else {
+            items[ id - 1 ].class = "";
+        }
 
         this.setState({items, itemStack, stats});
     }
@@ -85,9 +104,6 @@ export default class Puzzle extends Component {
         })
         itemStack = [];
         items = this.shuffle(items);
-        //for (var i = 0; i < items.length; i++ ) {
-        //    items[i].id = i;
-        //}
 
         this.setState({items, itemStack});
     }
@@ -102,14 +118,14 @@ export default class Puzzle extends Component {
                     <div class="container">
                         { items.map( (item, idx) => ( 
                             <div class="inlineBlock promote continuity">
-                                <div style={item.position} class="card frame picture" id={item.id} onClick={ () => this.promote(idx) } > 
+                                <div style={item.position} class= {item.class + " card frame picture"}  id={item.id} onClick={ () => this.promote(idx) } > 
                                 </div>
                             </div>
                         )) } 
                     </div> 
                 </div>
                 <div class="boxCover picture scaled"></div>
-                <div>Todo: make puzzle piece border transparent when piece matches</div>
+                <div>Todo: drag and drop</div>
             </div>
         )
     }

@@ -44,7 +44,10 @@ h3{
 }
 
 .frame {
-	border:1px solid black;
+	border-top:1px solid black;
+	border-left:1px solid black;
+	border-bottom:1px solid black;
+	border-bottom:1px solid transparent;
 	width: 49px;
 	height: 99px;
 }
@@ -56,5 +59,9 @@ h3{
 
 .scaled {
 	transform: scale(0.7);
+}
+
+.adjacent {
+	border-left:1px solid transparent;
 }
 
