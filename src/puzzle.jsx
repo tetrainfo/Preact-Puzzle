@@ -3,7 +3,8 @@ export default class Puzzle extends Component {
 
     state = { 
         items: [],
-        itemStack:[],
+        pieceMoved: 0,
+        over: 0,
         stats: {count: 0, points: 0 }
        }
 
@@ -11,7 +12,7 @@ export default class Puzzle extends Component {
         //build the collection of pieces
         const x0=-0;
         const y0=-20;
-        let { items, itemStack } = this.state;
+        let { items } = this.state;
         let counter = 0;
 
         for (var i=0; i<= 4; i++){
@@ -25,22 +26,36 @@ export default class Puzzle extends Component {
         }
         //shuffle the array and reassign the ids for access purposes to match the new array order
         //items = this.shuffle(items);
-        this.setState({items, itemStack});
+        this.setState({items});
     }
 
-    shuffle = items => {
-        var currentIndex = items.length, temporaryValue, randomIndex;
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-            // And swap it with the current element.
-            temporaryValue = items[currentIndex];
-            items[currentIndex] = items[randomIndex];
-            items[randomIndex] = temporaryValue;
+
+
+    drag = ( idx ) => {
+        let { pieceMoved } = this.state;
+        pieceMoved = idx;
+        this.setState({pieceMoved});
+    } 
+
+    dragOver = (idx) => {
+        this.setState( {over:idx} )
+    }
+
+    drop = ( ) => {
+        let { pieceMoved, over } = this.state;
+        let fromIdx = pieceMoved;
+        let toIdx = over;
+        if ( fromIdx > toIdx ) {
+            for (var i = fromIdx; i > toIdx; i-- ){
+                this.promote(i);
+            }
         }
-        return items;
+        else {
+            for (var i = fromIdx+1; i < toIdx+1; i++) {
+                this.promote(i)
+            }
+        }
+
     }
 
     areAdjacent = ( id1, id2 ) => {
@@ -53,16 +68,14 @@ export default class Puzzle extends Component {
         return false
     }
 
-
     promote = id => {
-        let { items, itemStack, stats } = this.state;
+        let { items } = this.state;
 
         //ignore this promotion if its rank is 0. Invalid
         if ( id < 1 ){
             //Invalid
             return
         }
-        stats.count++;
 
         //swap with item in front
         let promoted = items[ id ] ;
@@ -93,19 +106,33 @@ export default class Puzzle extends Component {
             items[ id - 1 ].class = "";
         }
 
-        this.setState({items, itemStack, stats});
+        this.setState({items});
     }
 
-    //not used, re used for reset
+    shuffle = items => {
+        var currentIndex = items.length, temporaryValue, randomIndex;
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            // And swap it with the current element.
+            temporaryValue = items[currentIndex];
+            items[currentIndex] = items[randomIndex];
+            items[randomIndex] = temporaryValue;
+        }
+        return items;
+    }
+
+    //Shuffle pieces
     newGame = () => {
-        let { items, itemStack } = this.state;
+        let { items } = this.state;
         items.map( item => {
             
         })
-        itemStack = [];
         items = this.shuffle(items);
 
-        this.setState({items, itemStack});
+        this.setState({items});
     }
     
     render({ }, { items, itemStack, stats }) {
@@ -114,18 +141,17 @@ export default class Puzzle extends Component {
                 <div class="cardTable">
                     <h3 style="display:inline-block;">Puzzle</h3>
                     <button style="margin-left: 10px; margin:5px;" value="left" onClick={this.newGame}>Shuffle</button> 
-                    <div class="inlineBlock stats"> &nbsp; Click to reorder: {stats.count} </div>
-                    <div class="container">
+                    <div class="inlineBlock stats"> &nbsp; Click or Drag to reorder </div>
+                    <div class="container" onDragEnd={ () => this.drop()} >
                         { items.map( (item, idx) => ( 
-                            <div class="inlineBlock promote continuity">
-                                <div style={item.position} class= {item.class + " card frame picture"}  id={item.id} onClick={ () => this.promote(idx) } > 
-                                </div>
+                            <div  class="inlineBlock promote continuity"  >
+                                <div style={item.position} draggable class= {item.class + " card frame picture"}  id={item.id} onClick={ () => this.promote(idx) } onDragStart={ () => this.drag(idx)}  onDragOver={ () => this.dragOver(idx)}> </div>
                             </div>
                         )) } 
                     </div> 
                 </div>
                 <div class="boxCover picture scaled"></div>
-                <div>Todo: drag and drop</div>
+                <div>Todo: URL definable picture</div>
             </div>
         )
     }
