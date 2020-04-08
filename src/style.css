@@ -53,7 +53,6 @@ h3{
 }
 
 .boxCover {
-	width: 820px;
 	height: 500px;
 }
 
@@ -63,5 +62,10 @@ h3{
 
 .adjacent {
 	border-left:1px solid transparent;
+}
+
+.button {
+	margin: 10px;
+	border-radius: 10%;
 }
 

@@ -1,35 +1,50 @@
 import { Component } from 'preact';
 export default class Puzzle extends Component {
-
+    
+    graphic = ".jpg) top left no-repeat; "
+    
     state = { 
         items: [],
         pieceMoved: 0,
-        over: 0,
-        stats: {count: 0, points: 0 }
+        puzzles: ['puzzles/puzzle0.jpg','puzzles/puzzle1.jpg','puzzles/puzzle2.jpg','puzzles/puzzle3.jpg','puzzles/puzzle4.jpg', 'puzzles/puzzle5.jpg' ],
+        boxCover: "background: url(puzzles/puzzle0" + this.graphic
        }
+
+    setBoxCover = ( puzzleIndex ) => {
+        //reset the image
+        let {items} = this.state;
+        let front = "";
+        for (var i=0; i < items.length; i++){
+            let pair = items[i].position.split('.');
+            front = pair[0].substring(0,pair[0].length -1);
+            items[i].position = front + puzzleIndex + "." + pair[1];
+        }
+          
+        this.setState( { boxCover: front + puzzleIndex + this.graphic, items })
+    }
 
     componentDidMount( ) {
         //build the collection of pieces
-        const x0=-0;
-        const y0=-20;
-        let { items } = this.state;
+        const x0 = -0;
+        const y0 = -20;
+        const rowWidth = 99;
+        const rows = 5;
+        const colWidth= 49;
+        const cols = 16;
+        let { items, boxCover } = this.state;
+        items = [];
         let counter = 0;
-
-        for (var i=0; i<= 4; i++){
-            for (var j=0; j<=15; j++) {
+        for (var row=0; row < rows; row++){
+            for ( var col = 0; col < cols; col++ ) {
                 let item = {id: counter};
                 counter++
                 item.class = ""; 
-                item.position ="background-position: " + (-j*49 + x0) + "px " + (-i*99 + y0) + "px";  
+                item.position = boxCover + "background-position: " + (-col * colWidth + x0) + "px " + (-row * rowWidth + y0) + "px";  
                 items.push(item);  
             }
         }
-        //shuffle the array and reassign the ids for access purposes to match the new array order
-        //items = this.shuffle(items);
         this.setState({items});
     }
-
-
 
     drag = ( idx ) => {
         let { pieceMoved } = this.state;
@@ -38,13 +53,16 @@ export default class Puzzle extends Component {
     } 
 
     dragOver = (idx) => {
-        this.setState( {over:idx} )
+        this.over = idx;
     }
+    //shared variable avoids setting state triggering Render 200x
+    over = 0
 
     drop = ( ) => {
-        let { pieceMoved, over } = this.state;
+        let toIdx = this.over;
+        let { pieceMoved } = this.state;
         let fromIdx = pieceMoved;
-        let toIdx = over;
+
         if ( fromIdx > toIdx ) {
             for (var i = fromIdx; i > toIdx; i-- ){
                 this.promote(i);
@@ -105,6 +123,7 @@ export default class Puzzle extends Component {
         else {
             items[ id - 1 ].class = "";
         }
+        //todo: check trailing elem as well
 
         this.setState({items});
     }
@@ -135,7 +154,8 @@ export default class Puzzle extends Component {
         this.setState({items});
     }
     
-    render({ }, { items, itemStack, stats }) {
+    render({ }, { items, boxCover, puzzles }) {
+        console.log("Render")
         return (
             <div>
                 <div class="cardTable">
@@ -145,13 +165,21 @@ export default class Puzzle extends Component {
                     <div class="container" onDragEnd={ () => this.drop()} >
                         { items.map( (item, idx) => ( 
                             <div  class="inlineBlock promote continuity"  >
-                                <div style={item.position} draggable class= {item.class + " card frame picture"}  id={item.id} onClick={ () => this.promote(idx) } onDragStart={ () => this.drag(idx)}  onDragOver={ () => this.dragOver(idx)}> </div>
+                                <div style={item.position} draggable class= {item.class + " card frame"}  id={item.id} onClick={ () => this.promote(idx) } onDragStart={ () => this.drag(idx)}  onDragOver={ () => this.dragOver(idx)}> </div>
                             </div>
                         )) } 
                     </div> 
                 </div>
-                <div class="boxCover picture scaled"></div>
-                <div>Todo: URL definable picture</div>
+                <div style={boxCover} class="boxCover  scaled"></div>
+                <div>
+                    <img src={puzzles[0]} width="100" class="promote button" onClick={() => this.setBoxCover(0)}/>
+                    <img src={puzzles[1]} width="100" class="promote button" onClick={() => this.setBoxCover(1)}/>
+                    <img src={puzzles[2]} width="100" class="promote button" onClick={() => this.setBoxCover(2)}/>
+                    <img src={puzzles[3]} width="100" class="promote button" onClick={() => this.setBoxCover(3)}/>
+                    <img src={puzzles[4]} width="100" class="promote button" onClick={() => this.setBoxCover(4)}/>
+                    <img src={puzzles[5]} width="100" class="promote button" onClick={() => this.setBoxCover(5)}/>
+
+                </div>
             </div>
         )
     }
