@@ -15,7 +15,7 @@ export default class App extends Component {
 		return (
 			<div>
 				<Puzzle/>
-
+					<p> See https://github.com/tetrainfo/Preact-Puzzle for source code</p>
 			</div>
 		);
 	}

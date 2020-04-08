@@ -5,6 +5,9 @@ echo "empty website folder"
 rm *.*
 echo "run build in src folder"
 cd C:/Users/tetra/Preact/puzzle/src
+cp C:/Users/tetra/Preact/puzzle/src/puzzles/*.* C:/tetrawebsite/html/puzzle/puzzles
+cp C:/tetrawebsite/html/puzzleServer.exe C:/tetrawebsite/html/puzzle/puzzleServer.exe
+echo "puzzles and file-server for localhhost:8085 copied to stage"
 echo "running build"
 npm run build
 echo "done building, fix index file slash references"
