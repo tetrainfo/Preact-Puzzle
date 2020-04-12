@@ -2,11 +2,11 @@ import { Component } from 'preact';
 export default class Puzzle extends Component {
     
     graphic = ".jpg) top left no-repeat; "
-    
+    //picture properties: 784px wide by 547 high
     state = { 
         items: [],
         pieceMoved: 0,
-        puzzles: ['puzzles/puzzle0.jpg','puzzles/puzzle1.jpg','puzzles/puzzle2.jpg','puzzles/puzzle3.jpg','puzzles/puzzle4.jpg', 'puzzles/puzzle5.jpg' ],
+        puzzles: ['puzzles/puzzle0.jpg','puzzles/puzzle1.jpg','puzzles/puzzle2.jpg','puzzles/puzzle3.jpg','puzzles/puzzle4.jpg', 'puzzles/puzzle5.jpg', 'puzzles/puzzle6.jpg', 'puzzles/puzzle7.jpg','puzzles/puzzle8.jpg' ],
         boxCover: "background: url(puzzles/puzzle0" + this.graphic
        }
 
@@ -86,6 +86,7 @@ export default class Puzzle extends Component {
         return false
     }
 
+    //promote this id  
     promote = id => {
         let { items } = this.state;
 
@@ -95,15 +96,21 @@ export default class Puzzle extends Component {
             return
         }
 
-        //swap with item in front
+        //get items
         let promoted = items[ id ] ;
         let demoted = items[ id-1 ];
         let upstream = items[ id-2 ];
         if (!upstream) {
             upstream = {id: "-1"}
         }
-        let upstreamId = upstream.id;
+        let downstream = items [id + 1];
+        if (!downstream) {
+            downstream = {id:"-2"}
+        }
 
+        let upstreamId = upstream.id;
+        let downstreamId = downstream.id;
+        //swap with item in front
         items[ id ] = demoted;
         items[ id-1 ] = promoted;
 
@@ -123,7 +130,16 @@ export default class Puzzle extends Component {
         else {
             items[ id - 1 ].class = "";
         }
-        //todo: check trailing elem as well
+        if (items[id+1]) {
+            if ( this.areAdjacent( demotedId, downstreamId ) ) {
+                items[ id + 1 ].class = "adjacent";
+            }
+            else {
+                items[ id + 1 ].class = "";
+            }
+        }
+
+
 
         this.setState({items});
     }
@@ -143,7 +159,7 @@ export default class Puzzle extends Component {
         return items;
     }
 
-    //Shuffle pieces
+    //Scramble pieces
     newGame = () => {
         let { items } = this.state;
         items.map( item => {
@@ -160,7 +176,7 @@ export default class Puzzle extends Component {
             <div>
                 <div class="cardTable">
                     <h3 style="display:inline-block;">Puzzle</h3>
-                    <button style="margin-left: 10px; margin:5px;" value="left" onClick={this.newGame}>Shuffle</button> 
+                    <button style="margin-left: 10px; margin:5px;" value="left" onClick={this.newGame}>Scramble</button> 
                     <div class="inlineBlock stats"> &nbsp; Click or Drag to reorder </div>
                     <div class="container" onDragEnd={ () => this.drop()} >
                         { items.map( (item, idx) => ( 
@@ -172,13 +188,9 @@ export default class Puzzle extends Component {
                 </div>
                 <div style={boxCover} class="boxCover  scaled"></div>
                 <div>
-                    <img src={puzzles[0]} width="100" class="promote button" onClick={() => this.setBoxCover(0)}/>
-                    <img src={puzzles[1]} width="100" class="promote button" onClick={() => this.setBoxCover(1)}/>
-                    <img src={puzzles[2]} width="100" class="promote button" onClick={() => this.setBoxCover(2)}/>
-                    <img src={puzzles[3]} width="100" class="promote button" onClick={() => this.setBoxCover(3)}/>
-                    <img src={puzzles[4]} width="100" class="promote button" onClick={() => this.setBoxCover(4)}/>
-                    <img src={puzzles[5]} width="100" class="promote button" onClick={() => this.setBoxCover(5)}/>
-
+                    { puzzles.map( (puzzle, index) => (
+                        <img src={puzzles[index]} width="100" class="promote button" onClick={() => this.setBoxCover(index)}/>
+                    )) }
                 </div>
             </div>
         )
