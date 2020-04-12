@@ -6,7 +6,7 @@ export default class Puzzle extends Component {
     state = { 
         items: [],
         pieceMoved: 0,
-        puzzles: ['puzzles/puzzle0.jpg','puzzles/puzzle1.jpg','puzzles/puzzle2.jpg','puzzles/puzzle3.jpg','puzzles/puzzle4.jpg', 'puzzles/puzzle5.jpg', 'puzzles/puzzle6.jpg', 'puzzles/puzzle7.jpg','puzzles/puzzle8.jpg' ],
+        puzzles: ['puzzles/puzzle0.jpg','puzzles/puzzle1.jpg','puzzles/puzzle2.jpg','puzzles/puzzle3.jpg','puzzles/puzzle4.jpg', 'puzzles/puzzle5.jpg', 'puzzles/puzzle6.jpg', 'puzzles/puzzle7.jpg','puzzles/puzzle8.jpg','puzzles/puzzle9.jpg','puzzles/puzzle10.jpg','puzzles/puzzle11.jpg' ],
         boxCover: "background: url(puzzles/puzzle0" + this.graphic
        }
 
@@ -16,7 +16,7 @@ export default class Puzzle extends Component {
         let front = "";
         for (var i=0; i < items.length; i++){
             let pair = items[i].position.split('.');
-            front = pair[0].substring(0,pair[0].length -1);
+            front = pair[0].replace(/[0-9]/g, '');
             items[i].position = front + puzzleIndex + "." + pair[1];
         }
           
